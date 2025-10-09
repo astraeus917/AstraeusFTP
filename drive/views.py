@@ -1,3 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+def drive(request):
+    """View da página principal do sistema"""
+
+    return render(request, 'drive/home.html')

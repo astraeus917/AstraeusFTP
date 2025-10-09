@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qa7&th5!g5vymgmi%yo-l+aqy@(3jmzutdk-1uhids59#3&djw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.3.2']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Project apps
+    'drive',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +77,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'database/db.sqlite3',
     }
 }
 
@@ -120,3 +122,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Project settings
+
+AUTH_USER_MODEL = 'drive.User'
