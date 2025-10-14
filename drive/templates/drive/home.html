@@ -5,7 +5,63 @@
 
 <!-- Page content -->
 {% block content %}
-<div>
-    <h1>Drive</h1>
-</div>
+<main>
+    <!-- Menu de controle do sistema -->
+    <div class="max-w-xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
+        <h1>Menu do Sistema</h1>
+        <div class="bg-zinc-800 p-2 rounded-md">
+            <ul>
+                <li class="m-5"><a href="#" class="bg-red-800 px-4 py-2 rounded-md">Usuário</a></li>
+                <li class="m-5"><a href="#" class="bg-red-800 px-4 py-2 rounded-md">Configurações</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Menu dos arquivos do sistema -->
+    <div class="max-w-7xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
+
+        <!-- Barra de ferramentas -->
+        <div class="bg-zinc-800 mb-2 rounded-md">
+            <button class="bg-green-800 px-4 py-2 rounded-md m-2">Upload</button>
+            <button class="bg-red-800 px-4 py-2 rounded-md m-2">Deletar</button>
+        </div>
+
+        <!-- Barra de pesquisa -->
+        <div class="bg-zinc-800 mb-2 rounded-md">
+            <input class="w-full px-4 py-2 bg-zinc-500 rounded-md" type="text" name="search" id="search"
+                placeholder="Pesquisar por arquivo ou documento...">
+        </div>
+
+        <!-- Caixa dos arquivos e documentos -->
+        <div class="bg-zinc-800 mb-2 rounded-md">
+
+            <!-- Cabeçalho da tabela de arquivos -->
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table class="min-w-full border border-gray-950 text-center text-gray-700">
+                    <thead class="bg-gray-300 text-black text-sm">
+                        <tr>
+                            <th class="font-medium px-4 py-2">Nome</th>
+                            <th class="font-medium px-4 py-2">Proprietário</th>
+                            <th class="font-medium px-4 py-2">Data de Modificação</th>
+                            <th class="font-medium px-4 py-2">Peso</th>
+                            <th class="font-medium px-4 py-2">Ação</th>
+                        </tr>
+                    </thead>
+                    <!-- Corpo da tabela de arquivos -->
+                    <tbody class="divide-y divide-gray-500 bg-white">
+                        <tr class="hover:bg-gray-400 hover:text-black transition">
+                            <td class="font-medium px-4 py-2">Zip.zip</td>
+                            <td class="font-medium px-4 py-2">Astraeus</td>
+                            <td class="font-medium px-4 py-2">10/10/10</td>
+                            <td class="font-medium px-4 py-2">100mb</td>
+                            <td class="font-medium px-4 py-2">
+                                <button class="text-blue-600 hover:text-blue-800 font-medium">Download</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
+
 class UserManager(BaseUserManager):
     def create_user(self, username, password, role='default', **extra_fields):
         """Cria um usuário personalizado no sistema"""
@@ -38,3 +39,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Arquivo(models.Model):
+    file_name = models.CharField(max_length=200)
+    extension = models.CharField()
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    file_weight = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        self.file_name
