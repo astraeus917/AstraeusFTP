@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 
-class Arquivo(models.Model):
+class File(models.Model):
     file_name = models.CharField(max_length=200)
     extension = models.CharField()
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

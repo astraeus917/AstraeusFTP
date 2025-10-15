@@ -22,8 +22,18 @@
 
         <!-- Barra de ferramentas -->
         <div class="bg-zinc-800 mb-2 rounded-md">
-            <button class="bg-green-800 px-4 py-2 rounded-md m-2">Upload</button>
-            <button class="bg-red-800 px-4 py-2 rounded-md m-2">Deletar</button>
+            <!-- Formulário de envio de arquivos -->
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <input type="file" name="files" multiple required class="block w-full border border-gray-300 p-2 rounded-lg">
+
+                <button name="form_type" value="upload_form" type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Enviar
+                </button>
+            </form>
+
+            <!-- <button class="bg-green-800 px-4 py-2 rounded-md m-2">Upload</button>
+            <button class="bg-red-800 px-4 py-2 rounded-md m-2">Deletar</button> -->
         </div>
 
         <!-- Barra de pesquisa -->
