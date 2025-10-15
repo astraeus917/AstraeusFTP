@@ -5,70 +5,87 @@
 
 <!-- Page content -->
 {% block content %}
-<main>
+<main class="flex">
     <!-- Menu de controle do sistema -->
-    <div class="max-w-xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
-        <h1>Menu do Sistema</h1>
-        <div class="bg-zinc-800 p-2 rounded-md">
+    <div class="w-xs h-[400px] bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
+        <h1>{{ user.username }}</h1>
+        <div class="bg-zinc-800 p-2 rounded-md mt-2">
             <ul>
-                <li class="m-5"><a href="#" class="bg-red-800 px-4 py-2 rounded-md">Usuário</a></li>
-                <li class="m-5"><a href="#" class="bg-red-800 px-4 py-2 rounded-md">Configurações</a></li>
+                <li class="m-5"><a href="#" class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Usuário</a></li>
+                <li class="m-5"><a href="#" class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Configurações</a>
+                </li>
             </ul>
         </div>
     </div>
 
     <!-- Menu dos arquivos do sistema -->
-    <div class="max-w-7xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
+    <div class="w-7xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
 
         <!-- Barra de ferramentas -->
-        <div class="bg-zinc-800 mb-2 rounded-md">
+        <div class="bg-zinc-800 mb-2 h-[56px] rounded-md">
             <!-- Formulário de envio de arquivos -->
             <form method="POST" enctype="multipart/form-data" class="space-y-4">
                 {% csrf_token %}
-                <input type="file" name="files" multiple required class="block w-full border border-gray-300 p-2 rounded-lg">
+                <input type="file" name="files" multiple required
+                    class="w-sm bg-zinc-600 px-4 py-2 rounded-md hover:bg-zinc-500 transition">
 
-                <button name="form_type" value="upload_form" type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                <button name="form_type" value="upload_form" type="submit"
+                    class="bg-green-800 px-4 py-2 rounded-md m-2 hover:bg-green-600 transition">
                     Enviar
                 </button>
             </form>
-
-            <!-- <button class="bg-green-800 px-4 py-2 rounded-md m-2">Upload</button>
-            <button class="bg-red-800 px-4 py-2 rounded-md m-2">Deletar</button> -->
         </div>
 
         <!-- Barra de pesquisa -->
         <div class="bg-zinc-800 mb-2 rounded-md">
-            <input class="w-full px-4 py-2 bg-zinc-500 rounded-md" type="text" name="search" id="search"
-                placeholder="Pesquisar por arquivo ou documento...">
+            <input class="w-full px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-500 transition" type="text" name="search"
+                id="search" placeholder="Pesquisar por arquivo ou documento...">
         </div>
 
         <!-- Caixa dos arquivos e documentos -->
-        <div class="bg-zinc-800 mb-2 rounded-md">
-
+        <div class="bg-zinc-800 h-[600px] mb-2 rounded-md overflow-y-auto">
             <!-- Cabeçalho da tabela de arquivos -->
-            <div class="overflow-x-auto rounded-lg shadow">
-                <table class="min-w-full border border-gray-950 text-center text-gray-700">
+            <div class="overflow-x-auto rounded-md shadow">
+                <table class="min-w-full text-center text-gray-700">
                     <thead class="bg-gray-300 text-black text-sm">
                         <tr>
                             <th class="font-medium px-4 py-2">Nome</th>
                             <th class="font-medium px-4 py-2">Proprietário</th>
                             <th class="font-medium px-4 py-2">Data de Modificação</th>
                             <th class="font-medium px-4 py-2">Peso</th>
-                            <th class="font-medium px-4 py-2">Ação</th>
+                            <th class="font-medium px-4 py-2">Baixar</th>
+                            <th class="font-medium px-4 py-2">Deletar</th>
                         </tr>
                     </thead>
                     <!-- Corpo da tabela de arquivos -->
+                    {% for file in all_files %}
                     <tbody class="divide-y divide-gray-500 bg-white">
                         <tr class="hover:bg-gray-400 hover:text-black transition">
-                            <td class="font-medium px-4 py-2">Zip.zip</td>
-                            <td class="font-medium px-4 py-2">Astraeus</td>
-                            <td class="font-medium px-4 py-2">10/10/10</td>
-                            <td class="font-medium px-4 py-2">100mb</td>
-                            <td class="font-medium px-4 py-2">
-                                <button class="text-blue-600 hover:text-blue-800 font-medium">Download</button>
+                            <td class="font-medium px-4 py-2">{{ file.file_name }}</td>
+                            <td class="font-medium px-4 py-2">{{ file.owner }}</td>
+                            <td class="font-medium px-4 py-2">{{ file.created_at }}</td>
+                            <td class="font-medium px-4 py-2">{{ file.size }}</td>
+                            <td class="font-medium px-4 py-2"> <!-- Botão de download -->
+                                <button class="bg-zinc-300 hover:bg-blue-800 p-1 rounded-md text-blue-600 hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 10.5 12 15m0 0 4.5-4.5M12 15V3" />
+                                    </svg>
+                                </button>
+                            </td>
+                            <td class="font-medium px-4 py-2"> <!-- Botão de deletar -->
+                                <button class="bg-zinc-300 hover:bg-red-800 p-1 rounded-md text-red-600 hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M6 7h12M9 7V4h6v3m-7 4v7m4-7v7m4-7v7M5 7h14l-1 13H6L5 7Z" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
+                    {% endfor %}
                 </table>
             </div>
         </div>

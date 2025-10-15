@@ -19,6 +19,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', 'True')
         return self.create_user(username, password, role='admin', **extra_fields)
 
+
 # Modelo de usuário personalizado
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
@@ -43,11 +44,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class File(models.Model):
     file_name = models.CharField(max_length=200)
-    extension = models.CharField()
+    # ext = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    file_weight = models.FloatField()
+    size = models.FloatField()
+    path = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        self.file_name
+        return self.file_name
