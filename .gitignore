@@ -209,8 +209,9 @@ __marimo__/
 # Project Ignores
 .vscode/
 
-# Database
+# Database & media
 database/db.sqlite3
+media/
 
 # Tailwindcss
 input.css
