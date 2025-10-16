@@ -11,8 +11,10 @@
         <h1>{{ user.username }}</h1>
         <div class="bg-zinc-800 p-2 rounded-md mt-2">
             <ul>
-                <li class="m-5"><a href="#" class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Usuário</a></li>
-                <li class="m-5"><a href="#" class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Configurações</a>
+                <li class="m-5"><a href="#"
+                        class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Usuário</a></li>
+                <li class="m-5"><a href="#"
+                        class="bg-blue-800 px-4 py-2 rounded-md hover:bg-blue-600 transition">Configurações</a>
                 </li>
             </ul>
         </div>
@@ -38,8 +40,8 @@
 
         <!-- Barra de pesquisa -->
         <div class="bg-zinc-800 mb-2 rounded-md">
-            <input class="w-full px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-500 transition" type="text" name="search"
-                id="search" placeholder="Pesquisar por arquivo ou documento...">
+            <input class="w-full px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-500 transition" type="text"
+                name="search" id="search" placeholder="Pesquisar por arquivo ou documento...">
         </div>
 
         <!-- Caixa dos arquivos e documentos -->
@@ -66,22 +68,34 @@
                             <td class="font-medium px-4 py-2">{{ file.created_at }}</td>
                             <td class="font-medium px-4 py-2">{{ file.size }}</td>
                             <td class="font-medium px-4 py-2"> <!-- Botão de download -->
-                                <button class="bg-zinc-300 hover:bg-blue-800 p-1 rounded-md text-blue-600 hover:text-white transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 10.5 12 15m0 0 4.5-4.5M12 15V3" />
-                                    </svg>
-                                </button>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input class="hidden" type="text" name="file_id" value="{{ file.id }}">
+
+                                    <button type="submit" name="form_type" value="download_form"
+                                        class="bg-zinc-300 hover:bg-blue-800 p-1 rounded-md text-blue-600 hover:text-white transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 10.5 12 15m0 0 4.5-4.5M12 15V3" />
+                                        </svg>
+                                    </button>
+                                </form>
                             </td>
                             <td class="font-medium px-4 py-2"> <!-- Botão de deletar -->
-                                <button class="bg-zinc-300 hover:bg-red-800 p-1 rounded-md text-red-600 hover:text-white transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M6 7h12M9 7V4h6v3m-7 4v7m4-7v7m4-7v7M5 7h14l-1 13H6L5 7Z" />
-                                    </svg>
-                                </button>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input class="hidden" type="text" name="file_id" value="{{ file.id }}">
+
+                                    <button type="submit" name="form_type" value="delete_form"
+                                        class="bg-zinc-300 hover:bg-red-800 p-1 rounded-md text-red-600 hover:text-white transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6 7h12M9 7V4h6v3m-7 4v7m4-7v7m4-7v7M5 7h14l-1 13H6L5 7Z" />
+                                        </svg>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>

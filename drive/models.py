@@ -43,11 +43,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class File(models.Model):
+    file = models.FileField(upload_to='uploads/')
     file_name = models.CharField(max_length=200)
     # ext = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     size = models.FloatField()
-    path = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
