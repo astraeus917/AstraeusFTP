@@ -25,8 +25,10 @@
         <div class="bg-zinc-800 mt-2 h-[160px] rounded-md flex">
             <form method="POST" enctype="multipart/form-data" class="m-2">
                 {% csrf_token %}
-                <input type="file" name="files" multiple required
+
+                <input type="file" name="file_list" multiple
                     class="w-2xs h-[96px] bg-zinc-600 px-4 py-2 rounded-md hover:bg-zinc-500 transition mb-2">
+
                 <button name="form_type" value="upload_form" type="submit"
                     class="bg-green-800 px-4 py-2 rounded-md hover:bg-green-600 transition">
                     Enviar
@@ -35,104 +37,52 @@
         </div>
     </div>
 
-    <!-- Menu dos arquivos do sistema -->
+    <!-- Menu dos arquivos salvos -->
     <div class="w-7xl bg-zinc-700 text-center text-white p-2 m-5 rounded-md">
 
-        <!-- Barra de pesquisa -->
-        <div class="bg-zinc-800 mb-2 rounded-md">
-            <input class="w-full px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-500 transition" type="text"
-                name="search" id="search" placeholder="Pesquisar por arquivo ou documento...">
-        </div>
-
-        <!-- Caixa dos arquivos e documentos -->
+        <!-- Tabela de arquivos  -->
         <div class="bg-zinc-800 h-[600px] mb-2 rounded-md overflow-y-auto">
+            <table class="min-w-full text-center text-gray-700">
+                <!-- Cabeçalho da tabela -->
+                <thead class="bg-gray-300 text-black text-sm">
+                    <tr>
+                        <th class="font-medium px-4 py-2"></th>
+                        <th class="font-medium px-4 py-2">Nome</th>
+                        <th class="font-medium px-4 py-2">Proprietário</th>
+                        <th class="font-medium px-4 py-2">Data de Modificação</th>
+                        <th class="font-medium px-4 py-2">Peso</th>
+                    </tr>
+                </thead>
 
-            <!-- Tabela de arquivos -->
-            <div class="overflow-x-auto rounded-md shadow">
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <!-- Tabela de arquivos -->
-                    <table class="min-w-full text-center text-gray-700">
-                        <!-- Cabeçalho da tabela de arquivos -->
-                        <thead class="bg-gray-300 text-black text-sm">
-                            <tr>
-                                <th class="font-medium px-4 py-2"></th>
-                                <th class="font-medium px-4 py-2">Nome</th>
-                                <th class="font-medium px-4 py-2">Proprietário</th>
-                                <th class="font-medium px-4 py-2">Data de Modificação</th>
-                                <th class="font-medium px-4 py-2">Peso</th>
-                                <th class="font-medium px-4 py-2">Baixar</th>
-                                <th class="font-medium px-4 py-2">Deletar</th>
-                            </tr>
-                        </thead>
-
-                        <!-- Corpo da tabela de arquivos -->
-                        <tbody class="divide-y divide-gray-500 bg-white">
-                            {% for file in all_files %}
+                <!-- Corpo da tabela -->
+                <tbody class="divide-y divide-gray-500 bg-white">
+                    <form method='POST'>
+                        {% csrf_token %}
+                        {% for file in all_files %}
                             <tr class="hover:bg-gray-400 hover:text-black transition">
-
                                 <td class="px-4 py-2">
-                                    <input type="checkbox" name="file_list" value="{{ file.id }}" class="file-checkbox">
+                                    <input type="checkbox" name="files" value="{{ file.id }}"
+                                    class="">
                                 </td>
-
                                 <td class="font-medium px-4 py-2">{{ file.file_name }}</td>
                                 <td class="font-medium px-4 py-2">{{ file.owner }}</td>
                                 <td class="font-medium px-4 py-2">{{ file.created_at }}</td>
                                 <td class="font-medium px-4 py-2">{{ file.size }}</td>
-
-                                <!-- Botão de download -->
-                                <td class="font-medium px-4 py-2">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        <!-- Informação oculta com a lista de arquivos -->
-                                        <input class="hidden" type="text" name="file_list" value="{{ file.id }}">
-
-                                        <button type="submit" name="form_type" value="download_form"
-                                            class="bg-zinc-300 hover:bg-blue-800 p-1 rounded-md text-blue-600 hover:text-white transition">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 10.5 12 15m0 0 4.5-4.5M12 15V3" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </td>
-
-                                <!-- Botão de deletar -->
-                                <td class="font-medium px-4 py-2">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        <!-- Informação oculta com a lista de arquivos -->
-                                        <input class="hidden" type="text" name="file_list" value="{{ file.id }}">
-
-                                        <button type="submit" name="form_type" value="delete_form"
-                                            class="bg-zinc-300 hover:bg-red-800 p-1 rounded-md text-red-600 hover:text-white transition">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6 7h12M9 7V4h6v3m-7 4v7m4-7v7m4-7v7M5 7h14l-1 13H6L5 7Z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </td>
                             </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endfor %}
+                        
+                        <button type="submit" name="form_type" value="download_form"
+                            class="bg-green-800 px-4 py-2 rounded-md hover:bg-green-600 transition">
+                            Baixar
+                        </button>
 
-                    <!-- Botões de multiplas seleções -->
-
-                    <button type="submit" name="form_type" value="download_form"
-                        class="bg-zinc-300 hover:bg-blue-800 p-1 rounded-md text-blue-600 hover:text-white transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 10.5 12 15m0 0 4.5-4.5M12 15V3" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
+                        <button type="submit" name="form_type" value="delete_form"
+                            class="bg-green-800 px-4 py-2 rounded-md hover:bg-green-600 transition">
+                            Deletar
+                        </button>
+                    </form>
+                </tbody>
+            </table>
         </div>
     </div>
 </main>

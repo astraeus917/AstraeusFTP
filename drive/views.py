@@ -4,10 +4,8 @@ from django.contrib import messages
 from django.conf import settings
 
 # Imports usados no gerenciamento dos aquivos
-import os
-from django.utils.text import get_valid_filename
-from django.shortcuts import get_object_or_404, redirect
-from django.http import FileResponse, Http404
+import io, zipfile
+from django.http import HttpResponse, FileResponse
 
 # Modelos do Banco de Dados
 from .models import File
@@ -18,6 +16,7 @@ def drive(request):
     View da página principal do sistema
     E tratamento das funções do sistema
     """
+
     # Pega todos os aquivos do Banco de Dados
     all_files = File.objects.all()
     context = {
@@ -28,121 +27,75 @@ def drive(request):
     if request.method == 'POST':
 
         # Upload de arquivos
-        if request.POST.get('form_type') == 'upload_form' and request.FILES.getlist('files'):
-            try:
-                count_files = []
+        if request.POST.get('form_type') == 'upload_form':
+            file_list = request.FILES.getlist('file_list')
+            count_files = []
 
-                for f in request.FILES.getlist('files'):
-                    # Nome e estensão
-                    safe_name, ext = os.path.splitext(get_valid_filename(f.name))
-                    ext = ext.lower()
-                    
-                    # Tamanho do arquivo e conversão para MB
-                    size_bytes = f.size
+            if not file_list:
+                messages.info(request, "Não existem arquivos para upload!")
+            try:
+                for file_obj in file_list:
+                    # Obtem o tamanho do arquivo em bytes e depois em mb
+                    size_bytes = file_obj.size
                     size_mb = round(size_bytes / (1024 * 1024), 2)
 
-                    # Adiciona o arquivo ao Banco de Dados
-                    save_file, created = File.objects.update_or_create(
-                        file = f,
-                        file_name = f,
-                        # ext = ext,
+                    # Adiciona o arquivo no Banco de Dados
+                    save_file, created = File.objects.objects(
+                        file = file_obj,
+                        file_name = file_obj,
                         size = size_mb,
-                    )
+                    ) 
 
-                    count_files.append(f) # lista de arquivos enviados
+                    count_files.append(file_obj)
 
-                    # Se o arquivo for criado, ele seta owner para None, por enquanto
                     if created:
                         save_file.owner = None
                         save_file.save()
                 
-                # Mensagem de sucesso do upload dos arquivos
-                messages.success(request, f"{len(count_files)} arquivo(s) salvo(s) com sucesso!")
+                if len(count_files) >= 1:
+                    messages.success(request, f"{len(count_files)} arquivo(s) salvo(s) com sucesso!")
 
-            # Mensagens de erros
             except Exception as e:
-                messages.error(request, f'Erro: {e}')
+                messages.error(request, f"Erro: {e}")
 
-        # Download do arquivo selecionado
-        elif request.POST.get('form_type') == 'download_form':
-            file_list = request.POST.getlist('file_list')
-
-            if not file_list:
-                messages.error(request, "Nenhum arquivo foi selecionado!")
-
-            for file_id in file_list:
-                print(file_list)
-
-            # try:
-            #     file_list = request.POST.getlist('file_list') # Pega todos os items marcados com checkbox
-
-            #     for file_id in file_list:
-            #         get_file = get_object_or_404(File, id=file_id)
-            #         file_path = get_file.file.path
-
-            #     if os.path.exists(file_path):
-            #         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=get_file.file.name)
-
-            #     else:
-            #         raise Http404("Não foi possível encontrar o arquivo!")
-
-            # except Exception as e:
-            #     messages.error(request, F"Erro: {e}")
-
-
-        # elif request.POST.get('form_type') == 'download_form':
-        #     try:
-        #         file_id = request.POST.get('file_id')
-        #         get_file = get_object_or_404(File, id=file_id)
-        #         file_path = get_file.file.path
-
-        #         if os.path.exists(file_path):
-        #             return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=get_file.file.name)
-
-        #         else:
-        #             raise Http404("Não foi possível encontrar o arquivo!")
-
-        #     except Exception as e:
-        #         messages.error(request, F"Erro: {e}")
-
-        # Deleta o arquivo selecionado
-        elif request.POST.get('form_type') == 'delete_form':
-            file_list = request.POST.getlist('file_list')
-
-            if not file_list:
-                messages.error(request, "Nenhum arquivo foi selecionado!")
-
-            for file_id in file_list:
-                print(file_list)
-
-                # get_file = File.objects.filter(id=file_id).first()
-
-                # if not get_file:
-                #     messages.error(request, "Arquivo não encontrado!")
-                
-                # try:
-                #     get_file.file.delete()
-                #     get_file.delete()
-                #     messages.error(request, "Arquivo deletado com sucesso!")
-
-                # except Exception as e:
-                #     messages.error(request, f"Erro: {e}")
-
-        #     try:
-        #         file_list = request.POST.getlist('file_list')
-
-        #         for file_id in file_list:
-        #             get_file = get_object_or_404(File, id=file_id)
-        #             get_file.file.delete()
-        #             get_file.delete()
-                
-        #         messages.success(request, "Arquivo deletado com sucesso!")
+        if request.POST.get('form_type') == 'download_form':
+            id_list = request.POST.getlist('files')
+            if not id_list:
+                messages.info(request, "Nenhum arquivo foi selecionado para Download!")
             
-        #     except Exception as e:
-        #         messages.error(request, f"Erro: {e}")
+            else:
+                file_list = File.objects.filter(id__in=id_list)
+                if not file_list.exists():
+                    messages.error(request, "Nenhum arquivo foi encontrado!")
+        
+                elif len(id_list) > 1:
+                    # Cria um buffer de memória para o .zip
+                    buffer = io.BytesIO()
+                    
+                    try:
+                        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+                            for file_obj in file_list:
 
-        else:
-            messages.error(request, "Nenhuma requisição foi solicitada!")
+                                save_file = file_obj.file_name or f"file_{file_obj.id}.ext"
+                                zip_file.write(file_obj.file.path, arcname=save_file)
+
+                        buffer.seek(0)
+
+                        response = HttpResponse(buffer, content_type='application/zip')
+                        response['Content-Disposition'] = 'attachment; filename="AstraeusFTP.zip"'
+                        return response
+                    
+                    except Exception as e:
+                        messages.error(request, f"Erro: {e}")
+
+                else:
+                    try:
+                        file_obj = file_list[0]
+                        file_path = file_obj.file.path
+                        with open(file_path, 'rb') as f:
+                            return FileResponse(f, as_attachment=True, filename=file_obj.file.name)
+
+                    except Exception as e:
+                        messages.error(request, f"Erro: {e}")
 
     return render(request, 'drive/home.html', context)
-
