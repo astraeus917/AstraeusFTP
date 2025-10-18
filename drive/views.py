@@ -65,31 +65,81 @@ def drive(request):
 
         # Download do arquivo selecionado
         elif request.POST.get('form_type') == 'download_form':
-            try:
-                file_id = request.POST.get('file_id')
-                get_file = get_object_or_404(File, id=file_id)
-                file_path = get_file.file.path
+            file_list = request.POST.getlist('file_list')
 
-                if os.path.exists(file_path):
-                    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=get_file.file.name)
+            if not file_list:
+                messages.error(request, "Nenhum arquivo foi selecionado!")
 
-                else:
-                    raise Http404("Não foi possível encontrar o arquivo!")
+            for file_id in file_list:
+                print(file_list)
 
-            except Exception as e:
-                messages.error(request, F"Erro: {e}")
+            # try:
+            #     file_list = request.POST.getlist('file_list') # Pega todos os items marcados com checkbox
+
+            #     for file_id in file_list:
+            #         get_file = get_object_or_404(File, id=file_id)
+            #         file_path = get_file.file.path
+
+            #     if os.path.exists(file_path):
+            #         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=get_file.file.name)
+
+            #     else:
+            #         raise Http404("Não foi possível encontrar o arquivo!")
+
+            # except Exception as e:
+            #     messages.error(request, F"Erro: {e}")
+
+
+        # elif request.POST.get('form_type') == 'download_form':
+        #     try:
+        #         file_id = request.POST.get('file_id')
+        #         get_file = get_object_or_404(File, id=file_id)
+        #         file_path = get_file.file.path
+
+        #         if os.path.exists(file_path):
+        #             return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=get_file.file.name)
+
+        #         else:
+        #             raise Http404("Não foi possível encontrar o arquivo!")
+
+        #     except Exception as e:
+        #         messages.error(request, F"Erro: {e}")
 
         # Deleta o arquivo selecionado
         elif request.POST.get('form_type') == 'delete_form':
-            try:
-                file_id = request.POST.get('file_id')
-                get_file = get_object_or_404(File, id=file_id)
-                get_file.file.delete()
-                get_file.delete()
-                messages.success(request, "Arquivo deletado com sucesso!")
+            file_list = request.POST.getlist('file_list')
+
+            if not file_list:
+                messages.error(request, "Nenhum arquivo foi selecionado!")
+
+            for file_id in file_list:
+                print(file_list)
+
+                # get_file = File.objects.filter(id=file_id).first()
+
+                # if not get_file:
+                #     messages.error(request, "Arquivo não encontrado!")
+                
+                # try:
+                #     get_file.file.delete()
+                #     get_file.delete()
+                #     messages.error(request, "Arquivo deletado com sucesso!")
+
+                # except Exception as e:
+                #     messages.error(request, f"Erro: {e}")
+
+        #     try:
+        #         file_list = request.POST.getlist('file_list')
+
+        #         for file_id in file_list:
+        #             get_file = get_object_or_404(File, id=file_id)
+        #             get_file.file.delete()
+        #             get_file.delete()
+                
+        #         messages.success(request, "Arquivo deletado com sucesso!")
             
-            except Exception as e:
-                messages.error(request, f"Erro: {e}")
+        #     except Exception as e:
+        #         messages.error(request, f"Erro: {e}")
 
         else:
             messages.error(request, "Nenhuma requisição foi solicitada!")
