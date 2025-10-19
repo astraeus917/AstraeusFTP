@@ -40,7 +40,7 @@ def drive(request):
                     size_mb = round(size_bytes / (1024 * 1024), 2)
 
                     # Adiciona o arquivo no Banco de Dados
-                    save_file, created = File.objects.objects(
+                    save_file, created = File.objects.update_or_create(
                         file = file_obj,
                         file_name = file_obj,
                         size = size_mb,
@@ -58,6 +58,7 @@ def drive(request):
             except Exception as e:
                 messages.error(request, f"Erro: {e}")
 
+        # Download de arquivos
         if request.POST.get('form_type') == 'download_form':
             id_list = request.POST.getlist('files')
             if not id_list:
@@ -92,10 +93,37 @@ def drive(request):
                     try:
                         file_obj = file_list[0]
                         file_path = file_obj.file.path
-                        with open(file_path, 'rb') as f:
-                            return FileResponse(f, as_attachment=True, filename=file_obj.file.name)
+                        file_response = open(file_path, 'rb')  # não usar 'with' aqui!
+                        return FileResponse(file_response, as_attachment=True, filename=file_obj.file.name)
 
                     except Exception as e:
                         messages.error(request, f"Erro: {e}")
+
+        # Exclusão de arquivos
+        if request.POST.get('form_type') == 'delete_form':
+            id_list = request.POST.getlist('files')
+            if not id_list:
+                messages.info(request, "Nenhum arquivo foi selecionado para Exclusão!")
+
+            else:
+                file_list = File.objects.filter(id__in=id_list)
+                if not file_list:
+                    messages.error(request, "Nenhum arquivo foi encontrado!")
+
+                else:
+                    count_files = []
+                    for file_obj in file_list:
+                        try:
+                            file_obj.file.delete()
+                            file_obj.delete()
+                            count_files.append(file_obj)
+
+                        except Exception as e:
+                            messages.error(request, f"Erro: {e}")
+
+                    messages.success(request, f"{len(count_files)} arquivo(s) deletado(s) com sucesso!")
+            
+        else:
+            pass
 
     return render(request, 'drive/home.html', context)
