@@ -31,8 +31,12 @@
             <form method="POST" enctype="multipart/form-data" class="m-2">
                 {% csrf_token %}
 
-                <input type="file" name="file_list" multiple
-                    class="bg-zinc-700 px-2 py-6 rounded-md shadow-md">
+                <label for="file_input" class="bg-indigo-600">
+                    [ + ]
+                </label>
+
+                <input id="file_input" type="file" name="file_list" multiple
+                    class="hidden bg-zinc-700 px-2 py-6 rounded-md shadow-md">
 
                 <button name="form_type" value="upload_form" type="submit"
                     class="bg-indigo-800 hover:bg-indigo-600 px-4 py-2 mt-2 rounded-md shadow-md transition">
@@ -44,8 +48,9 @@
 
     <!-- Menu dos arquivos salvos -->
     <div class="w-7xl h-[710px] mx-auto mt-2 bg-zinc-800 rounded-md shadow-md">
+        <!-- Pesquisa -->
         <div class="bg-zinc-900 m-1 rounded-md text-white">
-            <input type="text" placeholder="Pesquisar por arquivo ou documento..."
+            <input id="search-files" type="text" placeholder="Pesquisar por arquivo ou documento..."
             class="w-full p-3">
         </div>
 

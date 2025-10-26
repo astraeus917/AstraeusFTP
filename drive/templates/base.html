@@ -40,13 +40,48 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const selectAll = document.getElementById("select-all");
-            const checkboxes = document.querySelectorAll('input[name="files"]');
 
+            // Quando o "Selecionar Tudo" for clicado
             selectAll.addEventListener("change", () => {
-                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                // Seleciona apenas as linhas visíveis (as que a pesquisa não ocultou)
+                const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+
+                visibleRows.forEach(row => {
+                    const checkbox = row.querySelector('input[name="files"]');
+                    if (checkbox) checkbox.checked = selectAll.checked;
+                });
             });
+
+            // Reativa o botão "Selecionar Tudo" após nova pesquisa
+            const searchInput = document.getElementById("search-files");
+            if (searchInput) {
+                searchInput.addEventListener("input", () => {
+                    // Quando fizer uma nova pesquisa, desmarca o select-all
+                    selectAll.checked = false;
+                });
+            }
         });
 
+        // Função de pesquisa do sistema
+        function enableSearch(inputId, targetSelector) {
+            const searchInput = document.getElementById(inputId);
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener("input", function () {
+                const term = this.value.toLowerCase();
+                const lines = document.querySelectorAll(targetSelector);
+
+                lines.forEach((line) => {
+                    const text = line.textContent.toLowerCase();
+                    line.style.display = text.includes(term) ? "" : "none";
+                });
+            });
+        }
+        // Ativa a pesquisa na tabela
+        document.addEventListener("DOMContentLoaded", function () {
+            enableSearch("search-files", "tbody tr");
+        });
     </script>
 </body>
 
