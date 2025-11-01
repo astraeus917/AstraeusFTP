@@ -92,6 +92,20 @@
         document.addEventListener("DOMContentLoaded", function () {
             enableSearch("search-files", "tbody tr");
         });
+
+        // Contador de arquivos selecionados.
+        function updateFileCount(event) {
+            const count = event.target.files.length;
+            const label = document.getElementById('file_count');
+
+            if (count === 0) {
+                label.textContent = '';
+            } else if (count === 1) {
+                label.textContent = '1 arquivo selecionado';
+            } else {
+                label.textContent = `${count} arquivos selecionados`;
+            }
+        }
     </script>
 </body>
 </html>

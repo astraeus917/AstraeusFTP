@@ -19,13 +19,14 @@
             <h1 class="mb-2 text-gray-400">Enviar arquivos</h1>
             <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-2">
                 {% csrf_token %}
-
                 <label for="file_input"
                     class="bg-zinc-600 rounded-md px-4 py-6 hover:bg-zinc-500 text-gray-400 cursor-pointer transition">
                     [ + ]
                 </label>
 
-                <input id="file_input" type="file" name="file_list" multiple
+                <span id="file_count" class="ml-3 text-gray-300 text-sm"></span>
+
+                <input id="file_input" type="file" name="file_list" multiple onchange="updateFileCount(event)" 
                     class="hidden bg-zinc-700 px-2 py-6 rounded-md shadow-md">
 
                 <button name="form_type" value="upload_form" type="submit"
@@ -42,6 +43,11 @@
             <p>Pasta 02</p>
             <p>Pasta 03</p>
         </div>
+
+        <div class="bg-zinc-800 m-10 rounded-md px-4 py-2 flex-col gap-1 text-sm text-gray-400">
+            <p>Versão: 1.0 BETA</p>
+            <p>&copy; Astraeus 2025</p>
+        </div>
     </div>
 
     <!-- Arquivos do sistema -->
@@ -54,20 +60,20 @@
                     class="w-1/2 bg-zinc-700 px-4 py-2 rounded-md">
 
                 <!-- Botão para baixar arquivos -->
-                <button type="submit"
+                <button type="submit" name="form_type" value="download_form"
                     class="bg-green-800 rounded-md hover:bg-green-700 px-3 py-2 cursor-pointer transition">
                     Baixar
                 </button>
 
                 <!-- Botão para deletar arquivos -->
-                <button type="submit"
+                <button type="submit" name="form_type" value="delete_form"
                     class="bg-red-800 rounded-md hover:bg-red-700 px-4 py-2 cursor-pointer transition">
                     Deletar
                 </button>
             </div>
 
             <!-- Tabela de arquivos -->
-            <div class="overflow-x-auto">
+            <div class="overflow-y-auto lg:h-[700px] border border-zinc-700 rounded-md">
                 <table class="min-w-full border border-zinc-700 text-sm text-left text-white">
                     <thead class="bg-zinc-900 text-zinc-300 ">
                         <tr>

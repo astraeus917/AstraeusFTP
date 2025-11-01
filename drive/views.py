@@ -25,9 +25,10 @@ def drive(request):
 
     # Tratamento do envio de formulários
     if request.method == 'POST':
+        form_type = request.POST.get('form_type')
 
         # Upload de arquivos
-        if request.POST.get('form_type') == 'upload_form':
+        if form_type == 'upload_form':
             file_list = request.FILES.getlist('file_list')
             count_files = []
 
@@ -59,7 +60,7 @@ def drive(request):
                 messages.error(request, f"Erro: {e}")
 
         # Download de arquivos
-        if request.POST.get('form_type') == 'download_form':
+        if form_type == 'download_form':
             id_list = request.POST.getlist('files')
             if not id_list:
                 messages.info(request, "Nenhum arquivo foi selecionado para Download!")
@@ -100,7 +101,7 @@ def drive(request):
                         messages.error(request, f"Erro: {e}")
 
         # Exclusão de arquivos
-        if request.POST.get('form_type') == 'delete_form':
+        if form_type == 'delete_form':
             id_list = request.POST.getlist('files')
             if not id_list:
                 messages.info(request, "Nenhum arquivo foi selecionado para Exclusão!")
