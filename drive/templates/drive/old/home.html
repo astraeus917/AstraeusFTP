@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+<!-- Page title -->
+{% block title %} FTP - Drive {% endblock %}
+
+<!-- Page content -->
+{% block content %}
+<main class="m-2">
+    <!-- Menu de controle do sistema -->
+    <div class="w-full bg-zinc-800 rounded-md shadow-md text-center text-white grid grid-cols-3 gap-4">
+        <!-- Configurações e outras opções -->
+        <div class="bg-zinc-900 p-2 m-1 rounded-md shadow-md">
+            <ul>
+                <li class="py-2">
+                    <a href="#"
+                        class="bg-indigo-800 hover:bg-indigo-600 px-4 py-2 rounded-md shadow-md transition">
+                        {{ user.username }}
+                    </a>
+                </li>
+                <li class="py-2 mt-2">
+                    <a href="#"
+                        class="bg-indigo-800 hover:bg-indigo-600 px-4 py-2 rounded-md shadow-md transition">
+                        Configurações
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+         <!-- Formulário de envio de arquivos -->
+        <div class="bg-zinc-900 p-2 m-1 rounded-md shadow-md">
+            <form method="POST" enctype="multipart/form-data" class="m-2">
+                {% csrf_token %}
+
+                <label for="file_input" class="bg-indigo-600">
+                    [ + ]
+                </label>
+
+                <input id="file_input" type="file" name="file_list" multiple
+                    class="hidden bg-zinc-700 px-2 py-6 rounded-md shadow-md">
+
+                <button name="form_type" value="upload_form" type="submit"
+                    class="bg-indigo-800 hover:bg-indigo-600 px-4 py-2 mt-2 rounded-md shadow-md transition">
+                    Enviar
+                </button>
+            </form>
+        </div>
+    </div>
+
+</main>
+{% endblock %}
